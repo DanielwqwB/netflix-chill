@@ -1,7 +1,7 @@
 import './Home.css'
 import hero_banner from '../../assets/hero_banner.jpg'
 import hero_title from '../../assets/hero_title.png'
-import play_icon from '../../assets/Play_icon.png'
+import play_icon from '../../assets/play_icon.png'
 import info_icon from '../../assets/info_icon.png'
 import TitleCards from '../../components/TitleCards/TitleCards'
 import Footer from '../../components/Footer/Footer'
@@ -13,7 +13,7 @@ import profile_img from '../../assets/profile_img.png'
 import caret_icon from '../../assets/caret_icon.svg'
 
 
-import React, { useEffect, useState } from 'react';  
+import React, { useEffect, useRef, useState } from 'react';  
 import { useNavigate } from 'react-router-dom';  
 import axios from 'axios';  
 
@@ -33,27 +33,39 @@ import { API_ENDPOINT } from '../../Api';
 
 const Home = () => {
 
-  const [user, setUser] = useState(null);  
+  const navRef = useRef();
+  
+  useEffect(()=>{
+    window.addEventListener('scroll', ()=>{
+      if(window.scrollY >=80){
+        navRef.current.classList.add('nav-dark')
+      }else{
+        navRef.current.classList.remove('nav-dark')
+      }
+    })
+  },[])
+
+  // const [user, setUser] = useState(null);  
   const navigate = useNavigate();  
 
-  /* Verify if User In-Session in LocalStorage */  
-  useEffect(() => {  
-    const fetchDecodedUserID = async () => {  
-      try {  
-        const response = JSON.parse(localStorage.getItem('token'));  
-        setUser(response.data);  
+  // /* Verify if User In-Session in LocalStorage */  
+  // useEffect(() => {  
+  //   const fetchDecodedUserID = async () => {  
+  //     try {  
+  //       const response = JSON.parse(localStorage.getItem('token'));  
+  //       setUser(response.data);  
 
-        const decoded_token = jwtDecode(response.data.token);
-        setUser(decoded_token);
+  //       const decoded_token = jwtDecode(response.data.token);
+  //       setUser(decoded_token);
 
-      } catch (error) {  
+  //     } catch (error) {  
 
-        navigate('/login');  
-      }  
-    };  
+  //       navigate('/login');  
+  //     }  
+  //   };  
 
-    fetchDecodedUserID();  
-  }, []); 
+  //   fetchDecodedUserID();  
+  // }, []); 
 
 
   const handleLogout = async () => {  
@@ -69,7 +81,7 @@ const Home = () => {
 
   return (
     <div className='home'>
-      <div className='navbar'>
+      <div ref={navRef}  className='navbar'>
       <div className="navbar-left">
         <img src={logo} alt="" />
         <ul>
@@ -110,10 +122,10 @@ const Home = () => {
         </div>
       </div>
       <div className="more-cards">
-        <TitleCards title={"Blockbuster Movies"}/>
-        <TitleCards title={"Only on Netflix"}/>
-        <TitleCards title={"Upcoming"}/>
-        <TitleCards title={"Top Pics for You"}/>
+        <TitleCards title={"Blockbuster Movies"} category={"top_rated"}/>
+        <TitleCards title={"Only on Netflix"} category={"popular"}/>
+        <TitleCards title={"Upcoming"} category={"upcoming"}/>
+        <TitleCards title={"Top Pics for You"} category={"now_playing"}/>
       </div>
       <Footer/>
     </div>
