@@ -4,6 +4,7 @@ import axios from 'axios';
 import { API_ENDPOINT } from '../../Api.jsx';   
 import './Login.css'  
 import logo from '../../assets/logo.png'  
+import netflix_spinner from '../../assets/netflix_spinner.gif'
 
 const Login = () => {  
   const [signState, setSignState] = useState("Sign In");  
@@ -15,6 +16,7 @@ const Login = () => {
   const [password, setPassword] = useState('');  
   const [fullname, setFullname] = useState('');
   const [error, setError] = useState('');  
+  const [loading, setLoading] = useState(false);
 
   /* Verify if User In Session in LocalStorage */  
   useEffect(() => {  
@@ -33,6 +35,7 @@ const Login = () => {
   /* Performs Login Method */  
   const handleLoginSubmit = async (e) => {  
     e.preventDefault();  
+    setLoading(true);
     try {  
       const response = await axios.post(`${API_ENDPOINT}/auth/login`, {  
         username,  
@@ -44,11 +47,13 @@ const Login = () => {
     } catch (error) {  
       setError('Invalid username or password');  
     }  
+    setLoading(false);
   };   
 
   /* Performs Signup Method */  
 const handleSignUpSubmit = async (e) => {  
   e.preventDefault();  
+  setLoading(true);
   try {  
     const response = await axios.post(`${API_ENDPOINT}/auth/register`, {  
       fullname,  
@@ -61,10 +66,14 @@ const handleSignUpSubmit = async (e) => {
     } catch (error) {
       setError('Signup failed. Please try again.');
     }
+    setLoading(false);
   }; 
 
 
   return (  
+    loading?<div className="login-spinner">
+      <img src={netflix_spinner} alt="" />
+    </div>:
     <div className='login'>  
       <img src={logo} className='login-logo' alt="" />  
       <div className="login-form">  
